@@ -1,0 +1,70 @@
+import Employee from "./getEmployee/Employee.jsx"
+import AddEmployee from "./addEmployee/AddEmployee.jsx";
+import Update from "./updateuser/Update.jsx";
+import Login from "./auth/Login.jsx";
+import Register from "./auth/Register.jsx";
+import Profile from "./profile/Profile.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
+import { Toaster } from "react-hot-toast"
+
+
+function App() {
+ 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Navigate to="/login" replace />,
+  },
+  {
+    path: "/employee",
+    element: (
+      <ProtectedRoute>
+        <Employee />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/add",
+    element: (
+      <ProtectedRoute>
+        <AddEmployee />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/update/:id",
+    element: (
+      <ProtectedRoute>
+        <Update />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/profile",
+    element: (
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    ),
+  },
+ 
+ 
+]);
+  return (
+    <>
+     <RouterProvider router={router} />
+     <Toaster position="top-right" />
+    </>
+  )
+}
+
+export default App
