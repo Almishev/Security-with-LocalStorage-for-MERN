@@ -3,11 +3,13 @@ import "./employee.css";
 import api from "../utils/axiosConfig.js";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { removeToken } from "../utils/auth.js";
+import { removeToken, isAdmin } from "../utils/auth.js";
+
 
 const Employee = () => {
   const [Employees, setEmployees] = useState([]);
   const navigate = useNavigate();
+  const userIsAdmin = isAdmin(); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,9 +44,11 @@ const Employee = () => {
   return (
     <div className="employeeTable">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+       {userIsAdmin && (
         <Link to="/add" type="button" className="btn btn-primary">
           Add Employee <i className="fa-solid fa-Employee-plus"></i>
         </Link>
+       )}
         <Link to="/profile" type="button" className="btn btn-info">
           Profile <i className="fa-solid fa-user"></i>
         </Link>
@@ -68,7 +72,9 @@ const Employee = () => {
             <th scope="col">Departament</th>
             <th scope="col">Salary</th>
             <th scope="col">Date of Entry</th>
+            {userIsAdmin && (
             <th scope="col">Actions</th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -82,24 +88,25 @@ const Employee = () => {
                 <td>{Employee.department}</td>
                 <td>{Employee.salary}</td>
                 <td>{Employee.createdAt}</td>
-                
-                <td className="actionButtons">
-                  <Link
-                    to={`/update/` + Employee._id}
-                    type="button"
-                    className="btn btn-info"
-                  >
-                    <i className="fa-solid fa-pen-to-square"></i>
-                  </Link>
+                {userIsAdmin && (
+                  <td className="actionButtons">
+                    <Link
+                      to={`/update/` + Employee._id}
+                      type="button"
+                      className="btn btn-info"
+                    >
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </Link>
 
-                  <button
-                    onClick={() => deleteEmployee(Employee._id)}
-                    type="button"
-                    className="btn btn-danger"
-                  >
-                    <i className="fa-solid fa-trash"></i>
-                  </button>
-                </td>
+                    <button
+                      onClick={() => deleteEmployee(Employee._id)}
+                      type="button"
+                      className="btn btn-danger"
+                    >
+                      <i className="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+                )}
               </tr>
             );
           })}

@@ -4,6 +4,7 @@ import Update from "./updateuser/Update.jsx";
 import Login from "./auth/Login.jsx";
 import Register from "./auth/Register.jsx";
 import Profile from "./profile/Profile.jsx";
+import AdminRoute from "./components/AdminRoute.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import { Toaster } from "react-hot-toast"
@@ -25,19 +26,20 @@ const router = createBrowserRouter([
     ),
   },
   {
+
     path: "/add",
     element: (
-      <ProtectedRoute>
+      <AdminRoute>
         <AddEmployee />
-      </ProtectedRoute>
+      </AdminRoute>
     ),
   },
   {
     path: "/update/:id",
     element: (
-      <ProtectedRoute>
+      <AdminRoute>
         <Update />
-      </ProtectedRoute>
+      </AdminRoute>
     ),
   },
   {

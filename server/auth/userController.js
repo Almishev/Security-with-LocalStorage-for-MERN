@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 
 console.log('JWT_SECRET from env:', process.env.JWT_SECRET ? 'EXISTS' : 'MISSING');
 
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (payload) => {
+    return jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: '1h',
     });
 };
@@ -16,11 +16,12 @@ export const register = async (req, res) => {
         const newUser = new User(req.body);
         const user = await newUser.save();
         
-        const token = generateToken(user._id);
+        // include role in JWT payload
+        const token = generateToken({ id: user._id, role: user.role });
         
         res.status(201).json({
             message: "User registered successfully", 
-            user: { id: user._id, email: user.email, userName: user.userName },
+            user: { id: user._id, email: user.email, userName: user.userName, role: user.role },
             token 
         });
     }
@@ -49,11 +50,12 @@ export const login = async (req, res) => {
             return res.status(401).json({message: "Invalid email or password"});
         }
         
-        const token = generateToken(user._id);
+        // include role in JWT payload
+        const token = generateToken({ id: user._id, role: user.role });
 
         res.status(200).json({
             message: "Login successful",
-            user: { id: user._id, email: user.email, userName: user.userName },
+            user: { id: user._id, email: user.email, userName: user.userName, role: user.role },
             token 
         });
     }
@@ -87,8 +89,8 @@ export const getCurrentUser = async (req, res) => {
           id: user._id,
           userName: user.userName,
           email: user.email,
+          role: user.role,
           createdAt: user.createdAt,
-          
         }
       });
     } catch (error) {

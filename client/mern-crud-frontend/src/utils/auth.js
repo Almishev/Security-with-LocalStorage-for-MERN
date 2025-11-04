@@ -17,3 +17,22 @@ export const setToken = (token) => {
   export const isAuthenticated = () => {
     return !!getToken();
   };
+
+  
+export const getUserRole = () => {
+  const token = getToken();
+  if (!token) return null;
+  
+  try {
+    const payload = token.split('.')[1];
+    const decodedPayload = JSON.parse(atob(payload));
+    return decodedPayload.role || null;
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return null;
+  }
+};
+
+  export const isAdmin = () => {
+    return getUserRole() === 'admin';
+  };
