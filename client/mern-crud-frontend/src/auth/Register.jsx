@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/axiosConfig.js';
 import toast from 'react-hot-toast';
 import { setToken } from '../utils/auth.js';
 import './register.css';
@@ -20,7 +20,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/api/auth/register', userData);
+      const response = await api.post('/auth/register', userData);
       
       setToken(response.data.token);
       
