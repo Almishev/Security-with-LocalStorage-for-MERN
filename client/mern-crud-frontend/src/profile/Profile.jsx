@@ -50,6 +50,10 @@ const Profile = () => {
             <p className="profile-description">
               Welcome to your profile page. Here you can view your account information and manage your settings.
             </p>
+            <p className="profile-description">
+              Employee Management System
+            </p>
+
           </div>
         </div>
         <div className="profile-background"></div>
