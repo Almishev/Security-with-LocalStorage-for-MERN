@@ -51,9 +51,15 @@ const Profile = () => {
               Welcome to your profile page. Here you can view your account information and manage your settings.
             </p>
             <p className="profile-description">
+<<<<<<< HEAD
              {new Date().getDate()} {new Date().getMonth()} {new Date().getFullYear()}
             </p>
             
+=======
+              Employee Management System
+            </p>
+
+>>>>>>> a0406fffa1de8fe852bd15c3e85c76a1a79bfec8
           </div>
         </div>
         <div className="profile-background"></div>
