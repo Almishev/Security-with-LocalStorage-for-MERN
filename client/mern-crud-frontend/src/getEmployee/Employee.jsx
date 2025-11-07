@@ -4,10 +4,12 @@ import api from "../utils/axiosConfig.js";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { removeToken, isAdmin } from "../utils/auth.js";
+import { formatDate } from "../utils/dateIsoConfig.js";
 
 
 const Employee = () => {
   const [Employees, setEmployees] = useState([]);
+  const [sortConfig, setSortConfig] = useState({ column: null, direction: null });
   const navigate = useNavigate();
   const userIsAdmin = isAdmin(); 
 
@@ -22,6 +24,50 @@ const Employee = () => {
     };
     fetchData();
   }, []);
+
+  const handleSort = (column, accessor, type = 'string') => {
+    let direction = 'asc';
+
+    if (sortConfig.column === column && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+
+    const sortedEmployees = [...Employees].sort((a, b) => {
+      let aValue = accessor(a);
+      let bValue = accessor(b);
+
+      if (type === 'number') {
+        aValue = Number(aValue) || 0;
+        bValue = Number(bValue) || 0;
+        return direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+
+      if (type === 'date') {
+        aValue = new Date(aValue).getTime();
+        bValue = new Date(bValue).getTime();
+        return direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+
+      aValue = (aValue ?? '').toString().toLowerCase();
+      bValue = (bValue ?? '').toString().toLowerCase();
+      return direction === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+    });
+
+    setEmployees(sortedEmployees);
+    setSortConfig({ column, direction });
+  };
+
+  const renderSortIcon = (column) => {
+    if (sortConfig.column !== column) {
+      return <i className="fa-solid fa-arrows-up-down" style={{ marginLeft: '8px', opacity: 0.5 }}></i>;
+    }
+
+    if (sortConfig.direction === 'asc') {
+      return <i className="fa-solid fa-arrow-up" style={{ marginLeft: '8px' }}></i>;
+    }
+
+    return <i className="fa-solid fa-arrow-down" style={{ marginLeft: '8px' }}></i>;
+  };
 
   const deleteEmployee = async (EmployeeId) => {
     await api
@@ -66,12 +112,54 @@ const Employee = () => {
         <thead>
           <tr>
             <th scope="col">S.No.</th>
-            <th scope="col">First Name</th>
-            <th scope="col">Second Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Departament</th>
-            <th scope="col">Salary</th>
-            <th scope="col">Date of Entry</th>
+            <th
+              scope="col"
+              onClick={() => handleSort('firstName', (employee) => employee.firstName)}
+              style={{ cursor: 'pointer', userSelect: 'none' }}
+            >
+              First Name
+              {renderSortIcon('firstName')}
+            </th>
+            <th
+              scope="col"
+              onClick={() => handleSort('secondtName', (employee) => employee.secondtName)}
+              style={{ cursor: 'pointer', userSelect: 'none' }}
+            >
+              Second Name
+              {renderSortIcon('secondtName')}
+            </th>
+            <th
+              scope="col"
+              onClick={() => handleSort('email', (employee) => employee.email)}
+              style={{ cursor: 'pointer', userSelect: 'none' }}
+            >
+              Email
+              {renderSortIcon('email')}
+            </th>
+            <th
+              scope="col"
+              onClick={() => handleSort('department', (employee) => employee.department)}
+              style={{ cursor: 'pointer', userSelect: 'none' }}
+            >
+              Departament
+              {renderSortIcon('department')}
+            </th>
+            <th
+              scope="col"
+              onClick={() => handleSort('salary', (employee) => employee.salary, 'number')}
+              style={{ cursor: 'pointer', userSelect: 'none' }}
+            >
+              Salary
+              {renderSortIcon('salary')}
+            </th>
+            <th
+              scope="col"
+              onClick={() => handleSort('createdAt', (employee) => employee.createdAt, 'date')}
+              style={{ cursor: 'pointer', userSelect: 'none' }}
+            >
+              Date of Entry
+              {renderSortIcon('createdAt')}
+            </th>
             {userIsAdmin && (
             <th scope="col">Actions</th>
             )}
@@ -87,7 +175,7 @@ const Employee = () => {
                 <td>{Employee.email}</td>
                 <td>{Employee.department}</td>
                 <td>{Employee.salary}</td>
-                <td>{Employee.createdAt}</td>
+                <td>{formatDate(Employee.createdAt)}</td>
                 {userIsAdmin && (
                   <td className="actionButtons">
                     <Link
