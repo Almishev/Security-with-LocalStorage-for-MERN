@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../utils/axiosConfig.js';
 import toast from 'react-hot-toast';
 import './profile.css';
+import { formatDate } from '../utils/dateIsoConfig.js';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -45,21 +46,18 @@ const Profile = () => {
             <div className="profile-meta">
               <p><strong>Email:</strong> {user.email}</p>
               <p><strong>User ID:</strong> {user.id}</p>
-              <p><strong>Member since:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
+              <p><strong>Member since:</strong> {formatDate(user.createdAt)}</p>
             </div>
             <p className="profile-description">
               Welcome to your profile page. Here you can view your account information and manage your settings.
             </p>
             <p className="profile-description">
-<<<<<<< HEAD
-             {new Date().getDate()} {new Date().getMonth()} {new Date().getFullYear()}
+              {formatDate(new Date())}
             </p>
-            
-=======
+            <p className="profile-description">
               Employee Management System
             </p>
 
->>>>>>> a0406fffa1de8fe852bd15c3e85c76a1a79bfec8
           </div>
         </div>
         <div className="profile-background"></div>
