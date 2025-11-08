@@ -1,0 +1,52 @@
+{
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "/.github/workflows/*.yml"
+  },
+  "yaml.validate": true,
+  "yaml.completion": true,
+  "files.associations": {
+    "*.yml": "yaml",
+    ".github/workflows/*.yml": "yaml"
+  },
+  "yaml.schemaStore.enable": true,
+  "yaml.schemaStore.url": "https://www.schemastore.org/api/json/catalog.json",
+  "yaml.customTags": [
+    "!And",
+    "!If",
+    "!Not",
+    "!Find",
+    "!Base64",
+    "!Cidr",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!Join",
+    "!Ref",
+    "!Select",
+    "!Split",
+    "!Sub",
+    "!Transform"
+  ],
+  "yaml.lint": {
+    "customTags": [
+      "!And",
+      "!If",
+      "!Not",
+      "!Find",
+      "!Base64",
+      "!Cidr",
+      "!GetAtt",
+      "!GetAZs",
+      "!ImportValue",
+      "!Join",
+      "!Ref",
+      "!Select",
+      "!Split",
+      "!Sub",
+      "!Transform"
+    ]
+  },
+  "problems.showCurrentInStatus": true,
+  "github.actions.workflows.pinned.workflows": []
+}
+

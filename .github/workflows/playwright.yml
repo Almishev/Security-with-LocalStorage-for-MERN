@@ -16,13 +16,13 @@ jobs:
     
     - uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: 20
     
-    - name: Install dependencies (Server)
+    - name: Install Server Dependencies
       working-directory: ./server
       run: npm ci
     
-    - name: Install dependencies (Client)
+    - name: Install Client Dependencies
       working-directory: ./client/mern-crud-frontend
       run: npm ci
     
@@ -61,7 +61,7 @@ jobs:
         MONGO_URL: ${{ secrets.MONGO_URL || 'mongodb://localhost:27017/MERN_CRUD_WITH_AUTH' }}
       run: node scripts/setup-test-users.js
     
-    - name: Run Playwright tests
+    - name: Run Playwright Tests
       working-directory: ./client/mern-crud-frontend
       env:
         CI: true
