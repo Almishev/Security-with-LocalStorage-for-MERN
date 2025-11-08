@@ -1,0 +1,85 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    
+    - name: Install dependencies (Server)
+      working-directory: ./server
+      run: npm ci
+    
+    - name: Install dependencies (Client)
+      working-directory: ./client/mern-crud-frontend
+      run: npm ci
+    
+    - name: Install Playwright Browsers
+      working-directory: ./client/mern-crud-frontend
+      run: npx playwright install --with-deps chromium
+    
+    - name: Start MongoDB
+      run: |
+        docker run -d -p 27017:27017 --name mongodb mongo:latest
+        sleep 5
+    
+    - name: Start Backend Server
+      working-directory: ./server
+      env:
+        PORT: 8000
+        MONGO_URL: ${{ secrets.MONGO_URL || 'mongodb://localhost:27017/MERN_CRUD_WITH_AUTH' }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-secret-key-for-ci' }}
+      run: npm start &
+    
+    - name: Wait for Backend
+      run: |
+        echo "Waiting for backend to be ready..."
+        for i in {1..30}; do
+          if curl -f http://localhost:8000/api/employees 2>/dev/null || curl -f http://localhost:8000/api/auth/login 2>/dev/null; then
+            echo "Backend is ready!"
+            break
+          fi
+          echo "Attempt $i: Backend not ready yet, waiting..."
+          sleep 2
+        done
+    
+    - name: Setup Test Users
+      working-directory: ./server
+      env:
+        MONGO_URL: ${{ secrets.MONGO_URL || 'mongodb://localhost:27017/MERN_CRUD_WITH_AUTH' }}
+      run: node scripts/setup-test-users.js
+    
+    - name: Run Playwright tests
+      working-directory: ./client/mern-crud-frontend
+      env:
+        CI: true
+        TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL || 't.toni@abv.bg' }}
+        TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD || '123456' }}
+        TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL || 'petq@abv.bg' }}
+        TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD || '123456' }}
+      run: npm test
+    
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: client/mern-crud-frontend/playwright-report/
+        retention-days: 30
+    
+    - name: Cleanup MongoDB
+      if: always()
+      run: |
+        docker stop mongodb || true
+        docker rm mongodb || true
