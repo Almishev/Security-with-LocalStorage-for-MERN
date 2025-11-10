@@ -9,7 +9,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "setup-test-users": "node scripts/setup-test-users.js",
+    "update-users": "node scripts/update-existing-users-isPaid.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
