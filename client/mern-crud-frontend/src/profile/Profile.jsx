@@ -46,6 +46,30 @@ const Profile = () => {
             <div className="profile-meta">
               <p><strong>Email:</strong> {user.email}</p>
               <p><strong>User ID:</strong> {user.id}</p>
+              <p><strong>Role:</strong> {user.role}</p>
+              {/* Показваме Premium Status само за обикновени потребители, не за админи */}
+              {user.role !== 'admin' && (
+                <p>
+                  <strong>Premium Status:</strong>{' '}
+                  <span style={{
+                    color: user.isPaid ? '#10b981' : '#ef4444',
+                    fontWeight: 'bold',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}>
+                    {user.isPaid ? (
+                      <>
+                        <i className="fa-solid fa-check-circle"></i> Premium Active
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-times-circle"></i> Free Plan
+                      </>
+                    )}
+                  </span>
+                </p>
+              )}
               <p><strong>Member since:</strong> {formatDate(user.createdAt)}</p>
             </div>
             <p className="profile-description">

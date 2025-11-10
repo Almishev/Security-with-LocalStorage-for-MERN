@@ -1,4 +1,5 @@
 import Employee from "../model/employeeModel.js";
+import User from "../auth/userModel.js";
 
 export const create = async (req, res) => {
 
@@ -21,6 +22,43 @@ export const create = async (req, res) => {
 
 export const getAll = async (req,res) => {
     try {
+        const userId = req.userId; // От authenticateToken middleware
+        const userRole = req.userRole; // От authenticateToken middleware
+        
+        // Админи виждат всички служители
+        if (userRole === 'admin') {
+            const employees = await Employee.find();
+            if(employees.length === 0){
+                return res.status(404).json({message: "No employees found"});
+            }
+            return res.status(200).json(employees);
+        }
+        
+        // Обикновени потребители - проверяваме isPaid статуса
+        if (userId) {
+            const user = await User.findById(userId);
+            
+            if (!user) {
+                return res.status(404).json({message: "User not found"});
+            }
+            
+            const allEmployees = await Employee.find();
+            
+            if(allEmployees.length === 0){
+                return res.status(404).json({message: "No employees found"});
+            }
+            
+            // Ако потребителят НЕ е платил - показваме само първите 2 реда
+            if (!user.isPaid) {
+                const limitedEmployees = allEmployees.slice(0, 2);
+                return res.status(200).json(limitedEmployees);
+            }
+            
+            // Ако потребителят Е платил - показваме всички редове
+            return res.status(200).json(allEmployees);
+        }
+        
+        // Fallback - ако няма userId (не трябва да се случи заради middleware)
         const employees = await Employee.find();
         if(employees.length === 0){
             return res.status(404).json({message: "No employees found"});

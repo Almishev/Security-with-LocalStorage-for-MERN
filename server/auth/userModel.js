@@ -19,10 +19,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['admin', 'user'],
         default: 'user'
+    },
+    isPaid: {
+        type: Boolean,
+        default: false
     }
+    
 }, {timestamps: true});
 
 userSchema.pre('save', async function(next) {
+    // Гарантираме, че isPaid винаги е зададено (ако не е зададено изрично)
+    if (this.isPaid === undefined) {
+        this.isPaid = false;
+    }
    
     if (!this.isModified('password')) {
         return next();

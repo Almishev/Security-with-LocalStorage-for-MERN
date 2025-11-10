@@ -12,8 +12,13 @@ const generateToken = (payload) => {
 
 export const register = async (req, res) => {
     try {
+        // Гарантираме, че isPaid винаги е false при регистрация
+        const userData = {
+            ...req.body,
+            isPaid: false // Изрично задаваме false, за да гарантираме че полето се създава
+        };
        
-        const newUser = new User(req.body);
+        const newUser = new User(userData);
         const user = await newUser.save();
         
         // include role in JWT payload
@@ -21,7 +26,7 @@ export const register = async (req, res) => {
         
         res.status(201).json({
             message: "User registered successfully", 
-            user: { id: user._id, email: user.email, userName: user.userName, role: user.role },
+            user: { id: user._id, email: user.email, userName: user.userName, role: user.role, isPaid: user.isPaid },
             token 
         });
     }
@@ -55,7 +60,7 @@ export const login = async (req, res) => {
 
         res.status(200).json({
             message: "Login successful",
-            user: { id: user._id, email: user.email, userName: user.userName, role: user.role },
+            user: { id: user._id, email: user.email, userName: user.userName, role: user.role, isPaid: user.isPaid || false },
             token 
         });
     }
@@ -90,6 +95,7 @@ export const getCurrentUser = async (req, res) => {
           userName: user.userName,
           email: user.email,
           role: user.role,
+          isPaid: user.isPaid,
           createdAt: user.createdAt,
         }
       });

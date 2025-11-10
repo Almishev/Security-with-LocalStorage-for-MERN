@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import route from './routes/employeeRoute.js';
 import userRoute from './auth/userRoutes.js';
+import paymentRoute from './payment/stripeRoutes.js';
 import cors from 'cors';
 
 dotenv.config();
@@ -17,10 +18,13 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-
-
 app.use(cors(corsOptions));
 
+// Stripe webhook endpoint трябва да използва raw body, не JSON
+// Затова го добавяме ПРЕД bodyParser.json()
+app.use('/api/payment/webhook', express.raw({ type: 'application/json' }));
+
+// За всички останали endpoints използваме JSON parser
 app.use(bodyParser.json());
 
 
@@ -29,6 +33,7 @@ const MONGO_URL = process.env.MONGO_URL;
 
 app.use("/api/", route);
 app.use("/api/auth", userRoute);
+app.use("/api/payment", paymentRoute);
 
 mongoose
   .connect(MONGO_URL)

@@ -4,6 +4,7 @@ import Update from "./updateuser/Update.jsx";
 import Login from "./auth/Login.jsx";
 import Register from "./auth/Register.jsx";
 import Profile from "./profile/Profile.jsx";
+import PaymentSuccess from "./payment/PaymentSuccess.jsx";
 import AdminRoute from "./components/AdminRoute.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
@@ -58,8 +59,16 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: "/payment-success",
+    element: (
+      <ProtectedRoute>
+        <PaymentSuccess />
+      </ProtectedRoute>
+    ),
+  },
  
- 
+
 ]);
   return (
     <>
