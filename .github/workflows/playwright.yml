@@ -55,12 +55,6 @@ jobs:
           sleep 2
         done
     
-    - name: Setup Test Users
-      working-directory: ./server
-      env:
-        MONGO_URL: ${{ secrets.MONGO_URL || 'mongodb://localhost:27017/MERN_CRUD_WITH_AUTH' }}
-      run: node scripts/setup-test-users.js
-    
     - name: Run Playwright Tests
       working-directory: ./client/mern-crud-frontend
       env:
