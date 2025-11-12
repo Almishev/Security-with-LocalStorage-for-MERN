@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 const AddEmployee = () => {
   const employees = {
     firstName: "",
-    secondtName: "",
+    secondName: "",
     email: "",
     department: "",
     salary: "",
@@ -66,9 +66,9 @@ const AddEmployee = () => {
           <label htmlFor="firstName">Last Name:</label>
           <input
             type="text"
-            id="secondtName"
+            id="secondName"
             onChange={inputHandler}
-            name="secondtName"
+            name="secondName"
             autoComplete="off"
             placeholder="Enter your LastName"
           />

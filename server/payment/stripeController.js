@@ -1,34 +1,28 @@
 import { stripe } from './stripeConfig.js';
 import User from '../auth/userModel.js';
 
-/**
- * Създава checkout session за плащане
- * Използва price_data за да дефинира продукта динамично с иконка
- */
+
 export const createCheckoutSession = async (req, res) => {
   try {
-    const userId = req.userId; // От authenticateToken middleware
+    const userId = req.userId; 
     
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    // Проверяваме дали потребителят вече е платил
     const user = await User.findById(userId);
     if (user.isPaid) {
       return res.status(400).json({ message: 'User has already paid' });
     }
 
-    // Вземаме origin от заявката за success/cancel URLs
     const origin = req.headers.origin || 'http://localhost:5173';
 
-    // Създаваме checkout session с product_data и иконка
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
           price_data: {
-            currency: 'usd', // Можеш да промениш на 'bgn' или 'eur'
+            currency: 'BGN', 
             product_data: {
               name: 'Premium Access - Full Employee Table',
               description: 'Unlock full access to all employee records in the table',
@@ -36,7 +30,7 @@ export const createCheckoutSession = async (req, res) => {
                 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500', // Иконка/изображение за продукта
               ],
             },
-            unit_amount: 1000, // $10.00 (1000 цента) - промени според нуждата
+            unit_amount: 1000,
           },
           quantity: 1,
         },
@@ -44,7 +38,7 @@ export const createCheckoutSession = async (req, res) => {
       mode: 'payment',
       success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/employee`,
-      client_reference_id: userId.toString(), // За да знаем кой потребитель е платил
+      client_reference_id: userId.toString(), 
       metadata: {
         userId: userId.toString(),
       },
@@ -60,14 +54,11 @@ export const createCheckoutSession = async (req, res) => {
   }
 };
 
-/**
- * Проверява статуса на плащането по session ID
- * Ако плащането е успешно, автоматично обновява isPaid на true
- */
+
 export const checkPaymentStatus = async (req, res) => {
   try {
     const { sessionId } = req.params;
-    const userId = req.userId; // От authenticateToken middleware
+    const userId = req.userId; 
     
     if (!sessionId) {
       return res.status(400).json({ message: 'Session ID is required' });
@@ -75,7 +66,6 @@ export const checkPaymentStatus = async (req, res) => {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     
-    // Ако плащането е успешно, обновяваме isPaid автоматично
     if (session.payment_status === 'paid') {
       const targetUserId = session.client_reference_id || session.metadata?.userId || userId;
       
@@ -92,7 +82,7 @@ export const checkPaymentStatus = async (req, res) => {
           }
         } catch (error) {
           console.error('Error updating user payment status:', error);
-          // Продължаваме дори ако обновяването не успее
+         
         }
       }
     }

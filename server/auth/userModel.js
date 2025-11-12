@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
 }, {timestamps: true});
 
 userSchema.pre('save', async function(next) {
-    // Гарантираме, че isPaid винаги е зададено (ако не е зададено изрично)
+   
     if (this.isPaid === undefined) {
         this.isPaid = false;
     }

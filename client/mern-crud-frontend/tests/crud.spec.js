@@ -5,7 +5,7 @@ test.describe('CRUD Operations', () => {
   // Test data
   const testEmployee = {
     firstName: 'Test',
-    secondtName: 'Employee',
+    secondName: 'Employee',
     email: `test.employee.${Date.now()}@example.com`, // Unique email
     department: 'IT',
     salary: '5000',
@@ -40,7 +40,7 @@ test.describe('CRUD Operations', () => {
         // Check form elements
         await expect(page.locator('h3')).toContainText('Add New Employee');
         await expect(page.locator('input[name="firstName"]')).toBeVisible();
-        await expect(page.locator('input[name="secondtName"]')).toBeVisible();
+        await expect(page.locator('input[name="secondName"]')).toBeVisible();
         await expect(page.locator('input[name="email"]')).toBeVisible();
         await expect(page.locator('input[name="department"]')).toBeVisible();
         await expect(page.locator('input[name="salary"]')).toBeVisible();
@@ -65,7 +65,7 @@ test.describe('CRUD Operations', () => {
       
       // Fill form
       await page.fill('input[name="firstName"]', testEmployee.firstName);
-      await page.fill('input[name="secondtName"]', testEmployee.secondtName);
+      await page.fill('input[name="secondName"]', testEmployee.secondName);
       await page.fill('input[name="email"]', testEmployee.email);
       await page.fill('input[name="department"]', testEmployee.department);
       await page.fill('input[name="salary"]', testEmployee.salary);

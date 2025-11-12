@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 const Update = () => {
   const employees = {
     firstName: "",
-    secondtName: "",
+    secondName: "",
     email: "",
     department: "",
     salary: "",
@@ -82,10 +82,10 @@ const Update = () => {
           <label htmlFor="lastName">Last Name:</label>
           <input
             type="text"
-            id="secondtName"
+            id="secondName"
             onChange={inputHandler}
-            name="secondtName"
-            value={employee.secondtName}
+            name="secondName"
+            value={employee.secondName}
             autoComplete="off"
             placeholder="Enter your LastName"
           />

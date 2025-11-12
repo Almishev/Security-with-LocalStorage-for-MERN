@@ -173,11 +173,11 @@ const Employee = () => {
             </th>
             <th
               scope="col"
-              onClick={() => handleSort('secondtName', (employee) => employee.secondtName)}
+              onClick={() => handleSort('secondName', (employee) => employee.secondName)}
               style={{ cursor: 'pointer', userSelect: 'none' }}
             >
               Second Name
-              {renderSortIcon('secondtName')}
+              {renderSortIcon('secondName')}
             </th>
             <th
               scope="col"
@@ -205,6 +205,14 @@ const Employee = () => {
             </th>
             <th
               scope="col"
+              onClick={() => handleSort('kudos', (employee) => employee.kudos || 0, 'number')}
+              style={{ cursor: 'pointer', userSelect: 'none' }}
+            >
+              Kudos
+              {renderSortIcon('kudos')}
+            </th>
+            <th
+              scope="col"
               onClick={() => handleSort('createdAt', (employee) => employee.createdAt, 'date')}
               style={{ cursor: 'pointer', userSelect: 'none' }}
             >
@@ -222,10 +230,11 @@ const Employee = () => {
               <tr key={Employee._id}>
                 <td>{index + 1}</td>
                 <td>{Employee.firstName}</td>
-                <td>{Employee.secondtName}</td>
+                <td>{Employee.secondName}</td>
                 <td>{Employee.email}</td>
                 <td>{Employee.department}</td>
                 <td>{Employee.salary}</td>
+                <td>{Employee.kudos}</td>
                 <td>{formatDate(Employee.createdAt)}</td>
                 {userIsAdmin && (
                   <td className="actionButtons">

@@ -12,16 +12,15 @@ const generateToken = (payload) => {
 
 export const register = async (req, res) => {
     try {
-        // Гарантираме, че isPaid винаги е false при регистрация
+      
         const userData = {
             ...req.body,
-            isPaid: false // Изрично задаваме false, за да гарантираме че полето се създава
+            isPaid: false 
         };
        
         const newUser = new User(userData);
         const user = await newUser.save();
         
-        // include role in JWT payload
         const token = generateToken({ id: user._id, role: user.role });
         
         res.status(201).json({
